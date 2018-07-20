@@ -1,0 +1,3 @@
+name = ITEMS New and Edited
+icon = gui/icons/scmod_icon.png
+author = Jeffrey
