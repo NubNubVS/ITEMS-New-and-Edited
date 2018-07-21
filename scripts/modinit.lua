@@ -15,7 +15,7 @@ local function load( modApi, options )
 	if options[ "NewItems" ] and options[ "NewItems" ].enabled then
 		include( scriptPath .. "/SC_simempconcpack" )
 		include( scriptPath .. "/simunit" )
-		modApi:addAbilityDef( "SC_huntdevice", scriptPath .. "/abilities/SC_huntdevice" )
+		modApi:addAbilityDef( "SC_huntdaemon", scriptPath .. "/abilities/SC_huntdaemon" )
 		modApi:addAbilityDef( "SC_jackin_velocity", scriptPath .. "/abilities/SC_jackin_velocity" )
 		modApi:addAbilityDef( "SC_prime_emp_conc", scriptPath .."/abilities/SC_prime_emp_conc" )
 		modApi:addAbilityDef( "SC_router_icebreak", scriptPath .. "/abilities/SC_router_icebreak" )

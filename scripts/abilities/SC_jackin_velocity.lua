@@ -75,7 +75,7 @@ local SC_jackin_velocity =
 		end
 		local targetUnit = sim:getUnit( targetUnitID )
 		if targetUnit then
-			if targetUnit:getTraits().mainframe_console_lock > 0 then -- Unutilized, retained for future.
+			if targetUnit:getTraits().mainframe_console_lock > 0 then -- Nub: Unutilized, retained for future.
 				return false, STRINGS.UI.REASON.CONSOLE_LOCKED
 			end
 		end
@@ -86,7 +86,7 @@ local SC_jackin_velocity =
 	end,
 
 	executeAbility = function( self, sim, abilityOwner, unit, targetUnitID )
-		sim:emitSpeech( unit, speechdefs.EVENT_HIJACK ) -- Unutilized, retained for future.
+		sim:emitSpeech( unit, speechdefs.EVENT_HIJACK ) -- Nub: Unutilized, retained for future.
 		sim._resultTable.consoles_hacked = sim._resultTable.consoles_hacked and sim._resultTable.consoles_hacked + 1 or 1
 		local targetUnit = sim:getUnit( targetUnitID )
 		local x1, y1 = targetUnit:getLocation()
@@ -102,8 +102,8 @@ local SC_jackin_velocity =
 			unit:addMP( jackinAPbonus )
 			unit:getPlayerOwner():addCPUs( cpus + bonus, sim, x1, y1 )
 			inventory.useItem( sim, unit, abilityOwner )
-			targetUnit:getTraits().hijacked = true -- Unutilized, retained for future.
-			targetUnit:getTraits().mainframe_suppress_range = nil -- Redundant, retained for future.
+			targetUnit:getTraits().hijacked = true -- Nub: Unutilized, retained for future.
+			targetUnit:getTraits().mainframe_suppress_range = nil -- Nub: Redundant, retained for future.
 			targetUnit:setPlayerOwner( abilityOwner:getPlayerOwner() )
 			targetUnit:getTraits().cpus = 0
 		end

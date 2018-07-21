@@ -63,7 +63,7 @@ local useInvisiCloak =
 	end,
 
 	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
-	alwaysShow = true, -- Unutilized, retained for future.
+	alwaysShow = true, -- Nub: Unutilized, retained for future.
 
 	getName = function( self, sim, unit )
 		if unit:getTraits().cooldown == 0 then

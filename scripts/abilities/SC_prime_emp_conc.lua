@@ -47,8 +47,8 @@ local SC_prime_emp_conc =
 		return SC_emp_conc_tooltip( hud, abilityUser, abilityOwner, self, sim, abilityOwner, STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME_DESC )
 	end,
 
-	usesAction = true, -- Unutilized, retained for future.
-	alwaysShow = true, -- Unutilized, retained for future.
+	usesAction = true, -- Nub: Unutilized, retained for future.
+	alwaysShow = true, -- Nub: Unutilized, retained for future.
 	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
 
 	getName = function( self, sim, unit )

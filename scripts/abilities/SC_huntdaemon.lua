@@ -5,7 +5,7 @@ local inventory = include( "sim/inventory" )
 local abilityutil = include( "sim/abilities/abilityutil" )
 local mission_util = include( "sim/missions/mission_util" )
 
-local SC_huntdevice =
+local SC_huntdaemon =
 {
 	profile_icon = "gui/icons/item_icons/items_icon_small/SC_item_hunterchip_small.png",
 	proxy = true,
@@ -73,4 +73,4 @@ local SC_huntdevice =
 		inventory.useItem( sim, userUnit, unit )
 	end,
 }
-return SC_huntdevice
+return SC_huntdaemon

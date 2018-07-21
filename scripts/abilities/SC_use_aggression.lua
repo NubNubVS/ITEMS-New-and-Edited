@@ -39,6 +39,7 @@ local SC_use_aggression = util.extend( use_injection )
 		else
 			sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { unit = target, txt = STRINGS.SCMODS_ITEMS.FLY_TXT.ATKREF })
 			target:getTraits().ap = target:getTraits().apMax
+			-- SC: Unless you add attacks or set to unlimited, will always refresh the attack.
 		end
 		target:getTraits().genericPiercing = ( target:getTraits().genericPiercing or 0 ) + unit:getTraits().genericPiercing
 	end,
