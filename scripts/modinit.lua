@@ -18,7 +18,7 @@ local function load( modApi, options )
 		modApi:addAbilityDef( "SC_huntdevice", scriptPath .. "/abilities/SC_huntdevice" )
 		modApi:addAbilityDef( "SC_jackin_velocity", scriptPath .. "/abilities/SC_jackin_velocity" )
 		modApi:addAbilityDef( "SC_prime_emp_conc", scriptPath .."/abilities/SC_prime_emp_conc" )
-		modApi:addAbilityDef( "SC_router_icemelt", scriptPath .. "/abilities/SC_router_icemelt" )
+		modApi:addAbilityDef( "SC_router_icebreak", scriptPath .. "/abilities/SC_router_icebreak" )
 		modApi:addAbilityDef( "SC_use_aggression", scriptPath .."/abilities/SC_use_aggression" )
 		modApi:addAbilityDef( "useInvisiCloak", scriptPath .. "/abilities/useInvisiCloak" )
 		for name, item in pairs( itemdefs.newItems ) do
