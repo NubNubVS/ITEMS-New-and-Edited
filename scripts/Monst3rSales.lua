@@ -1,6 +1,6 @@
 local sales = include( "sim/simdefs" )
 
-function editMonst3rSales()
+local function editMonst3rSales()
 
 	sales.ITEMS_SPECIAL_DAY_1 =
 	{
@@ -65,7 +65,7 @@ function editMonst3rSales()
 
 end
 
-function restoreMonst3rSales()
+local function restoreMonst3rSales()
 
 	sales.ITEMS_SPECIAL_DAY_1 =
 	{
@@ -133,3 +133,9 @@ function restoreMonst3rSales()
 	}
 
 end
+
+return
+{
+	editMonst3rSales = editMonst3rSales,
+	restoreMonst3rSales = restoreMonst3rSales
+}

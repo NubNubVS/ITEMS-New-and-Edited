@@ -21,30 +21,30 @@ local function load( modApi, options )
 		modApi:addAbilityDef( "SC_router_icemelt", scriptPath .. "/abilities/SC_router_icemelt" )
 		modApi:addAbilityDef( "SC_use_aggression", scriptPath .."/abilities/SC_use_aggression" )
 		modApi:addAbilityDef( "useInvisiCloak", scriptPath .. "/abilities/useInvisiCloak" )
-		for name, item in pairs( itemdefs ) do
+		for name, item in pairs( itemdefs.newItems ) do
 			modApi:addItemDef( name, item )
 		end
 	end
-	include( scriptPath .. "/Monst3rSales" )
+	local sales = include( scriptPath .. "/Monst3rSales" )
 	if options[ "Monst3rSales" ] and options[ "Monst3rSales" ].enabled then
-		editMonst3rSales()
+		sales.editMonst3rSales()
 	else
-		restoreMonst3rSales()
+		sales.restoreMonst3rSales()
 	end
 end
 
 local function lateLoad( modApi, options )
 	local scriptPath = modApi:getScriptPath()
-	include( scriptPath .. "/itemdefs" )
+	local itemdefs = include( scriptPath .. "/itemdefs" )
 	if options[ "EditedItems" ] and options[ "EditedItems" ].enabled then
-		editItems()
+		itemdefs.editItems()
 	end
 end
 
 local function unload( modApi )
 	local scriptPath = modApi:getScriptPath()
-	include( scriptPath .. "/Monst3rSales" )
-	restoreMonst3rSales()
+	local sales = include( scriptPath .. "/Monst3rSales" )
+	sales.restoreMonst3rSales()
 end
 
 return

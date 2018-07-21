@@ -1,7 +1,7 @@
 local commondefs = include( "sim/unitdefs/commondefs" )
 local util = include( "modules/util" )
 
-function editItems()
+local function editItems()
 
 	local array = include( "modules/array" )
 	local itemdefs = include( "sim/unitdefs/itemdefs" )
@@ -189,7 +189,7 @@ local newItems =
 		ITEM_LIST = true,
 		traits = { cooldown = 0, cooldownMax = 2, laptop = true, mainframe_icon_on_deploy = true, sightable = true, hidesInCover = true, cpus = 0, cpuTurn = 1, cpuTurnMax = 1, meltvalue = -1 },
 		requirements = { hacking = 4 },
-		abilities = { "carryable", "deployable", "SC_router_icemelt" }
+		abilities = { "carryable", "deployable", "SC_router_icemelt" },
 		sounds = { deploy = "SpySociety/Objects/SuitcaseComputer_open", pickUp = "SpySociety/Objects/SuitcaseComputer_close" },
 		rig = "consolerig",
 		value = 1500,
@@ -260,4 +260,9 @@ local newItems =
 		soldAfter = 48,
 	}
 }
-return newItems
+
+return
+{
+	editItems = editItems,
+	newItems = newItems
+}
