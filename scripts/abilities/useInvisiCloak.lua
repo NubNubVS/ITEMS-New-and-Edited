@@ -106,27 +106,19 @@ local useInvisiCloak =
 		local userUnit = unit:getUnitOwner()
 		userUnit:setInvisible( true, unit:getTraits().duration )
 		userUnit:resetAllAiming()
-		if unit:getTraits().cloakDistanceMax then
-			userUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
-		else
-			userUnit:getTraits().cloakDistance = nil
-		end
+		userUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
 		if unit:getTraits().range then
 			local x0, y0 = userUnit:getLocation()
 			local units = getTargetUnits( sim, userUnit, x0, y0, unit:getTraits().range )
 			for i, cellUnit in ipairs( units ) do
 				if not sim:canPlayerSeeUnit( sim:getNPC(), cellUnit ) or unit:getTraits().cloakInVision then
 					cellUnit:setInvisible( true, unit:getTraits().duration )
-					if unit:getTraits().cloakDistanceMax then
-						cellUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
-					else
-						cellUnit:getTraits().cloakDistance = nil
-					end
+					cellUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
 				end
 			end
 		end
 		inventory.useItem( sim, userUnit, unit )
 		sim:processReactions( userUnit )
-	end,
+	end
 }
 return useInvisiCloak
