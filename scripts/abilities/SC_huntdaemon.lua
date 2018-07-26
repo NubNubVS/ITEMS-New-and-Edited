@@ -1,9 +1,9 @@
-local util = include( "modules/util" )
+local abilityutil = include( "sim/abilities/abilityutil" )
+local inventory = include( "sim/inventory" )
+local mission_util = include( "sim/missions/mission_util" )
 local simdefs = include( "sim/simdefs" )
 local simquery = include( "sim/simquery" )
-local inventory = include( "sim/inventory" )
-local abilityutil = include( "sim/abilities/abilityutil" )
-local mission_util = include( "sim/missions/mission_util" )
+local util = include( "modules/util" )
 
 local SC_huntdaemon =
 {
@@ -11,11 +11,10 @@ local SC_huntdaemon =
 	proxy = true,
 
 	createToolTip = function( self, sim, abilityOwner, abilityUser, targetID )
-		local targetUnit = sim:getUnit( targetID )
-		return abilityutil.formatToolTip( STRINGS.SCMODS_ITEMS.ABILITIES.HUNT, string.format( STRINGS.SCMODS_ITEMS.ABILITIES.HUNT_DESC, targetUnit:getName() ))
+		return abilityutil.formatToolTip( STRINGS.SCMODS_ITEMS.ABILITIES.HUNT, string.format( STRINGS.SCMODS_ITEMS.ABILITIES.HUNT_DESC, sim:getUnit( targetID ):getName() ))
 	end,
 
-	getName = function( self, sim, unit )
+	getName = function()
 		return STRINGS.SCMODS_ITEMS.ABILITIES.HUNT
 	end,
 
@@ -50,7 +49,7 @@ local SC_huntdaemon =
 
 	executeAbility = function( self, sim, unit, userUnit, target )
 		local userUnit = unit:getUnitOwner()
-		local target = sim:getUnit(target)
+		local target = sim:getUnit( target )
 		local x0, y0 = userUnit:getLocation()
 		local x1, y1 = target:getLocation()
 		local newFacing = simquery.getDirectionFromDelta( x1 - x0, y1 - y0 )
@@ -71,6 +70,6 @@ local SC_huntdaemon =
 		end
 		target:getTraits().daemon_sniffed = true
 		inventory.useItem( sim, userUnit, unit )
-	end,
+	end
 }
 return SC_huntdaemon
