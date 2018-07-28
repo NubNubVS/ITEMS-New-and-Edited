@@ -67,9 +67,8 @@ local SC_huntdaemon =
 				target:getTraits().daemonHost = nil
 			end
 			sim:dispatchEvent( simdefs.EV_PLAY_SOUND, simdefs.SOUND_DAEMON_REVEAL.path )
+			inventory.useItem( sim, userUnit, unit )
 		end
-		target:getTraits().daemon_sniffed = true
-		inventory.useItem( sim, userUnit, unit )
 	end
 }
 return SC_huntdaemon
