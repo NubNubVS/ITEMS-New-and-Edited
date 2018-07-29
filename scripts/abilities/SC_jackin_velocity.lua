@@ -1,13 +1,14 @@
-local util = include( "modules/util" )
+local abilityutil = include( "sim/abilities/abilityutil" )
+local inventory = include( "sim/inventory" )
+local mathutil = include( "modules/mathutil" )
 local simdefs = include( "sim/simdefs" )
 local simquery = include( "sim/simquery" )
-local inventory = include( "sim/inventory" )
-local abilityutil = include( "sim/abilities/abilityutil" )
 local speechdefs = include( "sim/speechdefs" )
-local mathutil = include( "modules/mathutil" )
+local util = include( "modules/util" )
 
 local SC_jackin_velocity =
 {
+	profile_icon = "gui/icons/item_icons/items_icon_small/SC_item_velocitydrive_small.png",
 	proxy = true,
 
 	onTooltip = function( self, hud, sim, abilityOwner, abilityUser, targetUnitID )
@@ -32,8 +33,6 @@ local SC_jackin_velocity =
 			return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.VELOCITY_TIP, cpus, cpus * 2 )
 		end
 	end,
-
-	profile_icon = "gui/icons/item_icons/items_icon_small/SC_item_velocitydrive_small.png",
 
 	calculateCPUs = function( self, abilityOwner, unit, targetUnit )
 		local bonus = unit:getTraits().hacking_bonus or 0
@@ -107,8 +106,8 @@ local SC_jackin_velocity =
 			targetUnit:setPlayerOwner( abilityOwner:getPlayerOwner() )
 			targetUnit:getTraits().cpus = 0
 		end
-		sim:processReactions( unit )
 		sim:dispatchEvent( simdefs.EV_UNIT_REFRESH, { unit = targetUnit })
-	end,
+		sim:processReactions( unit )
+	end
 }
 return SC_jackin_velocity

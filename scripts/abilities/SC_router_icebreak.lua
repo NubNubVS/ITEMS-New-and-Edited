@@ -26,6 +26,6 @@ local SC_router_icebreak =
 			end
 			unit:getTraits().cpuTurn = unit:getTraits().cpuTurnMax
 		end
-	end,
+	end
 }
 return SC_router_icebreak

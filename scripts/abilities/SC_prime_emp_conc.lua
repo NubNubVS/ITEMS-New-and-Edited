@@ -1,11 +1,11 @@
-local util = include( "modules/util" )
+local abilityutil = include( "sim/abilities/abilityutil" )
 local cdefs = include( "client_defs" )
+local inventory = include( "sim/inventory" )
 local simdefs = include( "sim/simdefs" )
+local simfactory = include( "sim/simfactory" )
 local simquery = include( "sim/simquery" )
 local unitdefs = include( "sim/unitdefs" )
-local simfactory = include( "sim/simfactory" )
-local inventory = include( "sim/inventory" )
-local abilityutil = include( "sim/abilities/abilityutil" )
+local util = include( "modules/util" )
 
 local SC_emp_conc_tooltip = class( abilityutil.hotkey_tooltip )
 
@@ -42,16 +42,15 @@ end
 local SC_prime_emp_conc =
 {
 	name = STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME,
+	usesAction = true, -- Nub: Unutilized, retained for future.
+	alwaysShow = true, -- Nub: Unutilized, retained for future.
+	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
 
 	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
 		return SC_emp_conc_tooltip( hud, abilityUser, abilityOwner, self, sim, abilityOwner, STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME_DESC )
 	end,
 
-	usesAction = true, -- Nub: Unutilized, retained for future.
-	alwaysShow = true, -- Nub: Unutilized, retained for future.
-	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
-
-	getName = function( self, sim, unit )
+	getName = function()
 		return STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME
 	end,
 
@@ -84,6 +83,6 @@ local SC_prime_emp_conc =
 		newUnit:getTraits().mainframe_status = "on"
 		userUnit:resetAllAiming()
 		inventory.useItem( sim, userUnit, unit )
-	end,
+	end
 }
 return SC_prime_emp_conc

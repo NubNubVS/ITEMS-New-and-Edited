@@ -4,8 +4,8 @@ local util = include( "modules/util" )
 local function editItems()
 
 	local array = include( "modules/array" )
-	local itemdefs = include( "sim/unitdefs/itemdefs" )
 	local id
+	local itemdefs = include( "sim/unitdefs/itemdefs" )
 	local shop = include( "sim/units/store" )
 
 	itemdefs.item_bio_dartgun.traits.armorPiercing = nil
@@ -27,6 +27,7 @@ local function editItems()
 	itemdefs.item_prototype_drive.traits.maxIcebreak = 15
 	itemdefs.item_prototype_drive.requirements = { hacking = 2, anarchy = 2 }
 	itemdefs.item_prototype_drive.value = 900
+	itemdefs.item_prototype_drive.soldAfter = 48
 	table.insert( shop.STORE_ITEM.itemList, itemdefs.item_prototype_drive )
 
 	itemdefs.item_tazer_2.traits.cooldownMax = 4
@@ -173,7 +174,7 @@ local newItems =
 		ITEM_LIST = true,
 		traits = { cooldown = 0, cooldownMax = 4, usesCharges = true, charges = 2, chargesMax = 2 },
 		requirements = { hacking = 4 },
-		abilities = { "carryable", "recharge", "SC_huntdevice" },
+		abilities = { "carryable", "recharge", "SC_huntdaemon" },
 		value = 700,
 		floorWeight = 3,
 		soldAfter = 24,

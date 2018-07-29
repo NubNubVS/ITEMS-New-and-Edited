@@ -1,8 +1,8 @@
-local util = include( "modules/util" )
-local simunit = include( "sim/simunit" )
 local simdefs = include( "sim/simdefs" )
-local simquery = include( "sim/simquery" )
 local simfactory = include( "sim/simfactory" )
+local simquery = include( "sim/simquery" )
+local simunit = include( "sim/simunit" )
+local util = include( "modules/util" )
 
 local SC_emp_conc = { ClassType = "simemppackconcussive" }
 

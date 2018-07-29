@@ -1,8 +1,8 @@
-local util = include( "modules/util" )
-local cdefs = include( "client_defs" )
-local simquery = include( "sim/simquery" )
 local abilityutil = include( "sim/abilities/abilityutil" )
+local cdefs = include( "client_defs" )
 local inventory = include( "sim/inventory" )
+local simquery = include( "sim/simquery" )
+local util = include( "modules/util" )
 
 local function getTargetUnits( sim, userUnit, x0, y0, range )
 	local units = {}
@@ -57,13 +57,12 @@ end
 local useInvisiCloak =
 {
 	name = STRINGS.ABILITIES.CLOAK,
+	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
+	alwaysShow = true, -- Nub: Unutilized, retained for future.
 
 	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
 		return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC, abilityOwner:getTraits().duration ))
 	end,
-
-	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
-	alwaysShow = true, -- Nub: Unutilized, retained for future.
 
 	getName = function( self, sim, unit )
 		if unit:getTraits().cooldown == 0 then

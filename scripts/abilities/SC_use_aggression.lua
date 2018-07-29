@@ -1,12 +1,13 @@
-local util = include( "modules/util" )
+local abilityutil = include( "sim/abilities/abilityutil" )
 local simdefs = include( "sim/simdefs" )
 local simquery = include( "sim/simquery" )
-local abilityutil = include( "sim/abilities/abilityutil" )
 local use_injection = include( "sim/abilities/use_injection" )
+local util = include( "modules/util" )
 
 local SC_use_aggression = util.extend( use_injection )
 {
 	name = STRINGS.ABILITIES.USE_AGGRESSION,
+	profile_icon = "gui/icons/item_icons/items_icon_small/icon-item_defibulator_small.png",
 
 	createToolTip = function( self, sim, unit )
 		if unit:getTraits().ap then
@@ -17,8 +18,6 @@ local SC_use_aggression = util.extend( use_injection )
 			return abilityutil.formatToolTip( STRINGS.ABILITIES.USE_AGGRESSION, STRINGS.SCMODS_ITEMS.ABILITIES.VENTRICULAR_DESC_1 )
 		end
 	end,
-
-	profile_icon = "gui/icons/item_icons/items_icon_small/icon-item_defibulator_small.png",
 
 	isTarget = function( self, sim, userUnit, targetUnit )
 		local canUse = targetUnit:getPlayerOwner() == userUnit:getPlayerOwner()
@@ -42,6 +41,6 @@ local SC_use_aggression = util.extend( use_injection )
 			-- SC: Unless you add attacks or set to unlimited, will always refresh the attack.
 		end
 		target:getTraits().genericPiercing = ( target:getTraits().genericPiercing or 0 ) + unit:getTraits().genericPiercing
-	end,
+	end
 }
 return SC_use_aggression

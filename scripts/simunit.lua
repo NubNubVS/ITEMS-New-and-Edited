@@ -1,6 +1,6 @@
-local util = include( "modules/util" )
 local simdefs = include( "sim/simdefs" )
 local simunit = include( "sim/simunit" )
+local util = include( "modules/util" )
 
 function simunit:onStartTurn( sim )
 
