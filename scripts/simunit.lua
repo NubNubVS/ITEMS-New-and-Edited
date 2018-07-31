@@ -1,4 +1,5 @@
 local simdefs = include( "sim/simdefs" )
+local simquery = include( "sim/simquery" )
 local simunit = include( "sim/simunit" )
 local util = include( "modules/util" )
 
