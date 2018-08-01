@@ -61,20 +61,19 @@ local useInvisiCloak =
 	alwaysShow = true, -- Nub: Unutilized, retained for future.
 
 	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
-		return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC, abilityOwner:getTraits().duration ))
+		if ( abilityOwner:getTraits().cloakDistanceMax or 0 ) > 1 then
+			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC1, abilityOwner:getTraits().duration, abilityOwner:getTraits().cloakDistanceMax - 1 ))
+		else
+			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC2, abilityOwner:getTraits().duration ))
+		end
 	end,
 
 	getName = function( self, sim, unit )
-		if unit:getTraits().cooldown == 0 then
-			return STRINGS.ABILITIES.CLOAK_USE
+		local userUnit = unit:getUnitOwner()
+		if userUnit:getTraits().invisDuration then
+			return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DURATION, userUnit:getTraits().invisDuration )
 		else
-			local turns = unit:getTraits().cooldownMax - unit:getTraits().cooldown
-			local userUnit = unit:getUnitOwner()
-			if turns < unit:getTraits().duration and userUnit:getTraits().invisible == true then
-				return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DURATION, unit:getTraits().duration - turns )
-			else
-				return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_COOLDOWN, unit:getTraits().cooldown )
-			end
+			return STRINGS.ABILITIES.CLOAK_USE
 		end
 	end,
 
@@ -103,16 +102,14 @@ local useInvisiCloak =
 
 	executeAbility = function( self, sim, unit )
 		local userUnit = unit:getUnitOwner()
-		userUnit:setInvisible( true, unit:getTraits().duration )
+		userUnit:setInvisible( true, unit:getTraits().duration, unit:getTraits().cloakDistanceMax )
 		userUnit:resetAllAiming()
-		userUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
 		if unit:getTraits().range then
 			local x0, y0 = userUnit:getLocation()
 			local units = getTargetUnits( sim, userUnit, x0, y0, unit:getTraits().range )
 			for i, cellUnit in ipairs( units ) do
 				if not sim:canPlayerSeeUnit( sim:getNPC(), cellUnit ) or unit:getTraits().cloakInVision then
-					cellUnit:setInvisible( true, unit:getTraits().duration )
-					cellUnit:getTraits().cloakDistance = unit:getTraits().cloakDistanceMax
+					cellUnit:setInvisible( true, unit:getTraits().duration, unit:getTraits().cloakDistanceMax )
 				end
 			end
 		end

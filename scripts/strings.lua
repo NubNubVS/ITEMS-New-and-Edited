@@ -2,9 +2,9 @@ local SCMODS_ITEMS =
 {
 	ABILITIES =
 	{
-		CLOAK_COOLDOWN = "Cloak Recharging: {1} {1:TURN|TURNS}",
-		CLOAK_DESC = "Lasts {1} {1:TURN|TURNS}. Requires cooldown to use again.",
-		CLOAK_DURATION = "Cloak Active: {1} {1:TURN|TURNS}",
+		CLOAK_DESC1 = "Lasts {1} {1:TURN|TURNS} or {2} AP of movement. Recloaking will retain the higher duration and distance.",
+		CLOAK_DESC2 = "Lasts {1} {1:TURN|TURNS}. Recloaking will retain the higher duration and distance.",
+		CLOAK_DURATION = "Cloaked: {1} {1:TURN|TURNS}",
 		EMP_CONC_PRIME = "Prime Concussive EMP",
 		EMP_CONC_PRIME_DESC = "Place the Concussive EMP Pack on the ground and prime it. Detonate it using the mainframe.",
 		EMP_CONC_USE = "Detonate Concussive EMP",

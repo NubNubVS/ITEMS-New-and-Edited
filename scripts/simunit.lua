@@ -137,36 +137,50 @@ function simunit:onStartTurn( sim )
 	end
 end
 
-function simunit:setInvisible( state, duration )
+function simunit:setInvisible( state, duration, distance )
 
 	local sim = self._sim
+	local x2, y2 = self:getLocation()
+
+	if self:getTraits().invisible and state then
+		if self:getTraits().invisDuration and duration then
+			self:getTraits().invisDuration = math.max( self:getTraits().invisDuration, duration )
+		else
+			self:getTraits().invisDuration = nil
+		end
+		if self:getTraits().cloakDistance and distance then
+			self:getTraits().cloakDistance = math.max( self:getTraits().cloakDistance, distance )
+		else
+			self:getTraits().cloakDistance = nil
+		end
+	else
+		self:getTraits().invisDuration = duration
+		self:getTraits().cloakDistance = distance
+	end
+
+	if state then
+		sim:emitSound( simdefs.SOUND_CLOAK, x2, y2, nil )
+		sim:dispatchEvent( simdefs.EV_CLOAK_IN, { unit = self })
+		if self:getTraits().invisDuration then
+			sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = util.sformat( STRINGS.SCMODS_ITEMS.FLY_TXT.CLOAKED, self:getTraits().invisDuration ), x = x2, y = y2, color = { r = 1, g = 1, b = 51/255 }})
+		else
+			sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = STRINGS.SCMODS_ITEMS.FLY_TXT.CLOAKED_NODURATION, x = x2, y = y2, color = { r = 1, g = 1, b = 51/255 }})
+		end
+	elseif self:getTraits().invisDuration then
+		sim:dispatchEvent( simdefs.EV_CLOAK_OUT, { unit = self })
+	end
 
 	if ( self:getTraits().invisible == true ) ~= ( state == true ) then
+
 		local cell = self:getSim():getCell( self:getLocation() )
 		self._sim:generateSeers( self )
 		self:getTraits().invisible = state
-		local x2, y2 = self:getLocation()
-
-		if state then
-			sim:emitSound( simdefs.SOUND_CLOAK, x2, y2, nil )
-		else
-			sim:dispatchEvent( simdefs.EV_CLOAK_OUT, { unit = self })
-		end
-
 		-- Refresh before notifying seers, so that the unit appears correct if 'stuff' happens.
 		sim:dispatchEvent( simdefs.EV_UNIT_REFRESH, { unit = self })
 		self._sim:notifySeers()
 
 		if self:getTraits().invisible then
 			-- Run CLOAK Augments
-			sim:dispatchEvent( simdefs.EV_CLOAK_IN, { unit = self })
-
-			if duration == nil then
-				sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = STRINGS.SCMODS_ITEMS.FLY_TXT.CLOAKED_NODURATION, x = x2, y = y2, color = { r = 255/255, g = 255/255, b = 51/255, a = 1 }})
-			else
-				sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = util.sformat( STRINGS.SCMODS_ITEMS.FLY_TXT.CLOAKED, duration ), x = x2, y = y2, color = { r = 255/255, g = 255/255, b = 51/255, a = 1 }})
-			end
-
 			if self:countAugments( "augment_chameleon_movement" ) > 0 then
 				sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = STRINGS.ITEMS.AUGMENTS.CHAMELEON_MOVEMENT, x = x2, y = y2, color = { r = 255/255, g = 255/255, b = 51/255, a = 1 }})
 				self:getTraits().mp = self:getTraits().mp + 6
@@ -206,11 +220,5 @@ function simunit:setInvisible( state, duration )
 		end
 	end
 
-	if self:getTraits().invisible then
-		if duration ~= nil then
-			self:getTraits().invisDuration = math.max( self:getTraits().invisDuration or 0, duration or 0 )
-		end
-	else
-		self:getTraits().invisDuration = nil
-	end
+	sim:dispatchEvent( simdefs.EV_UNIT_REFRESH, { unit = self })
 end
