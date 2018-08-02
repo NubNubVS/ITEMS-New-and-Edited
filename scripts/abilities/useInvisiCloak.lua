@@ -4,6 +4,15 @@ local inventory = include( "sim/inventory" )
 local simquery = include( "sim/simquery" )
 local util = include( "modules/util" )
 
+local function getCloakDistance( unit )
+	local distance = unit:getTraits().cloakDistanceMax or unit:getTraits().cloakDistance
+	if distance then
+		return distance - 1
+	else
+		return "unlimited"
+	end
+end
+
 local function getTargetUnits( sim, userUnit, x0, y0, range )
 	local units = {}
 	local cells = simquery.fillCircle( sim, x0, y0, range, 0 )
@@ -61,17 +70,17 @@ local useInvisiCloak =
 	alwaysShow = true, -- Nub: Unutilized, retained for future.
 
 	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
-		if ( abilityOwner:getTraits().cloakDistanceMax or 0 ) > 1 then
-			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC1, abilityOwner:getTraits().duration, abilityOwner:getTraits().cloakDistanceMax - 1 ))
+		if abilityUser:getTraits().invisDuration then
+			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC .. STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_REDESC, abilityOwner:getTraits().duration, getCloakDistance( abilityOwner ), abilityUser:getTraits().invisDuration, getCloakDistance( abilityUser )))
 		else
-			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC2, abilityOwner:getTraits().duration ))
+			return cloak_tooltip( hud, abilityUser, abilityOwner:getTraits().range, self, sim, abilityOwner, util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DESC, abilityOwner:getTraits().duration, getCloakDistance( abilityOwner )))
 		end
 	end,
 
 	getName = function( self, sim, unit )
 		local userUnit = unit:getUnitOwner()
 		if userUnit:getTraits().invisDuration then
-			return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_DURATION, userUnit:getTraits().invisDuration )
+			return STRINGS.SCMODS_ITEMS.ABILITIES.CLOAK_REUSE
 		else
 			return STRINGS.ABILITIES.CLOAK_USE
 		end
@@ -89,7 +98,7 @@ local useInvisiCloak =
 		if unit:getTraits().usesCharges and unit:getTraits().charges < 1 then
 			return false, util.sformat( STRINGS.UI.REASON.CHARGES )
 		end
-		if unit:getTraits().pwrCost and userUnit:getPlayerOwner():getCpus() < unit:getTraits().pwrCost then
+		if unit:getTraits().pwrCost and userUnit:getPlayerOwner():getCpus() < unit:getTraits().pwrCost then -- Nub: Unutilized, retained for future.
 			return false, STRINGS.UI.REASON.NOT_ENOUGH_PWR
 		end
 		if not unit:getTraits().cloakInVision then
