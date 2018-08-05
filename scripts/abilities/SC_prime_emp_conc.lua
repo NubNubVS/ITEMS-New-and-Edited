@@ -20,11 +20,8 @@ end
 function SC_emp_conc_tooltip:activate( screen )
 	abilityutil.hotkey_tooltip.activate( self, screen )
 	local x0, y0 = self._unit:getLocation()
-	local coords = {}
-	coords = simquery.rasterCircle( self._game.simCore, x0, y0, self._range )
-	self._hiliteID = self._game.boardRig:hiliteCells( coords, { 0.2, 0.2, 0.2, 0.2 })
-	local targets = self._emp:getTargets( x0, y0 )
-	for i, target in ipairs( targets ) do
+	self._hiliteID = self._game.boardRig:hiliteCells( simquery.rasterCircle( self._game.simCore, x0, y0, self._range ), { 0.2, 0.2, 0.2, 0.2 })
+	for i, target in ipairs( self._emp:getTargets( x0, y0 )) do
 		self._game.boardRig:getUnitRig( target:getID() ):getProp():setRenderFilter( cdefs.RENDER_FILTERS[ "focus_target" ])
 	end
 end
@@ -33,8 +30,7 @@ function SC_emp_conc_tooltip:deactivate()
 	abilityutil.hotkey_tooltip.deactivate( self )
 	self._game.boardRig:unhiliteCells( self._hiliteID )
 	self._hiliteID = nil
-	local targets = self._emp:getTargets( self._unit:getLocation() )
-	for i, target in ipairs( targets ) do
+	for i, target in ipairs( self._emp:getTargets( self._unit:getLocation() )) do
 		self._game.boardRig:getUnitRig( target:getID() ):refreshRenderFilter()
 	end
 end
@@ -42,16 +38,16 @@ end
 local SC_prime_emp_conc =
 {
 	name = STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME,
-	usesAction = true, -- Nub: Unutilized, retained for future.
-	alwaysShow = true, -- Nub: Unutilized, retained for future.
 	profile_icon = "gui/icons/action_icons/Action_icon_Small/icon-item_hijack_small.png",
-
-	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
-		return SC_emp_conc_tooltip( hud, abilityUser, abilityOwner, self, sim, abilityOwner, STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME_DESC )
-	end,
+	alwaysShow = true, -- Nub: These two are unutilized, retained for future.
+	usesAction = true,
 
 	getName = function()
 		return STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME
+	end,
+
+	onTooltip = function( self, hud, sim, abilityOwner, abilityUser )
+		return SC_emp_conc_tooltip( hud, abilityUser, abilityOwner, self, sim, abilityOwner, STRINGS.SCMODS_ITEMS.ABILITIES.EMP_CONC_PRIME_DESC )
 	end,
 
 	canUseAbility = function( self, sim, abilityOwner )
@@ -61,8 +57,7 @@ local SC_prime_emp_conc =
 		if abilityOwner:getTraits().usesCharges and abilityOwner:getTraits().charges < 1 then
 			return false, util.sformat( STRINGS.UI.REASON.CHARGES )
 		end
-		local abilityUser = abilityOwner:getUnitOwner()
-		local ok, reason = abilityutil.checkRequirements( abilityOwner, abilityUser )
+		local ok, reason = abilityutil.checkRequirements( abilityOwner, abilityOwner:getUnitOwner() )
 		if not ok then
 			return false, reason
 		end
@@ -70,7 +65,7 @@ local SC_prime_emp_conc =
 	end,
 
 	executeAbility = function( self, sim, unit, userUnit )
-		local cell = sim:getCell( unit:getLocation() ) or sim:getCell( userUnit:getLocation() )
+		local cell = sim:getCell( userUnit:getLocation() )
 		local newUnit = simfactory.createUnit( unitdefs.lookupTemplate( unit:getUnitData().id ), sim )
 		sim:dispatchEvent( simdefs.EV_UNIT_PICKUP, { unitID = userUnit:getID() })
 		sim:spawnUnit( newUnit )

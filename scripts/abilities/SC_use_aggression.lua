@@ -20,10 +20,10 @@ local SC_use_aggression = util.extend( use_injection )
 	end,
 
 	isTarget = function( self, sim, userUnit, targetUnit )
-		local canUse = targetUnit:getPlayerOwner() == userUnit:getPlayerOwner()
-		canUse = canUse and not targetUnit:isDead()
-		canUse = canUse and simquery.isAgent( targetUnit )
-		return canUse
+		if targetUnit:getPlayerOwner() == userUnit:getPlayerOwner() and simquery.isAgent( targetUnit ) and not targetUnit:isDead() then
+			return true
+		end
+		return false
 	end,
 
 	doInjection = function( self, sim, unit, userUnit, target )

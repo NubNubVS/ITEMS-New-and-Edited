@@ -18,7 +18,7 @@ local SC_router_icebreak =
 				local target = pool[ math.floor( sim:nextRand() * #pool ) + 1 ]
 				sim:dispatchEvent( simdefs.EV_UNIT_UPDATE_ICE, { unit = target, ice = target:getTraits().mainframe_ice, delta = -icebreak })
 				target:getTraits().mainframe_ice = target:getTraits().mainframe_ice - icebreak
-				sim:triggerEvent( simdefs.TRG_ICE_BROKEN, { unit = target })
+				sim:triggerEvent( simdefs.TRG_ICE_BROKEN, { unit = target }) -- Nub: For Mainframe Attunement
 				sim:dispatchEvent( simdefs.EV_UNIT_ADD_FX, { unit = unit, kanim = "gui/hud_fx", symbol = "wireless_console_takeover", above = true })
 				sim:dispatchEvent( simdefs.EV_UNIT_ADD_FX, { unit = target, kanim = "gui/hud_fx", symbol = "wireless_console_takeover", above = true })
 				sim:dispatchEvent( simdefs.EV_WAIT_DELAY, 30 )

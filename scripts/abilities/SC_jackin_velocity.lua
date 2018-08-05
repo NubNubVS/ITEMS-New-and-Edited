@@ -11,22 +11,12 @@ local SC_jackin_velocity =
 	profile_icon = "gui/icons/item_icons/items_icon_small/SC_item_velocitydrive_small.png",
 	proxy = true,
 
-	onTooltip = function( self, hud, sim, abilityOwner, abilityUser, targetUnitID )
-		local tooltip = util.tooltip( hud._screen )
-		local section = tooltip:addSection()
-		local canUse, reason = abilityUser:canUseAbility( sim, self, abilityOwner, targetUnitID )
-		local targetUnit = sim:getUnit( targetUnitID )
-		section:addLine( targetUnit:getName() )
-		section:addAbility( self:getName( sim, abilityOwner, abilityUser, targetUnitID ), STRINGS.SCMODS_ITEMS.ABILITIES.VELOCITY_DESC, "gui/items/icon-action_hack-console.png" )
-		if reason then
-			section:addRequirement( reason )
-		end
-		return tooltip
+	calculateCPUs = function( self, abilityOwner, unit, targetUnit )
+		return math.ceil( targetUnit:getTraits().cpus ), unit:getTraits().hacking_bonus or 0 -- Nub: CPUs is always an integer, math.ceil kept for compatibility.
 	end,
 
 	getName = function( self, sim, abilityOwner, abilityUser, targetUnitID )
-		local targetUnit = sim:getUnit( targetUnitID )
-		local cpus, bonus = self:calculateCPUs( abilityOwner, abilityUser, targetUnit )
+		local cpus, bonus = self:calculateCPUs( abilityOwner, abilityUser, sim:getUnit( targetUnitID ))
 		if bonus > 0 then
 			return util.sformat( STRINGS.SCMODS_ITEMS.ABILITIES.VELOCITY_TIP_BONUS, cpus, bonus, ( cpus + bonus ) * 2 )
 		else
@@ -34,9 +24,16 @@ local SC_jackin_velocity =
 		end
 	end,
 
-	calculateCPUs = function( self, abilityOwner, unit, targetUnit )
-		local bonus = unit:getTraits().hacking_bonus or 0
-		return math.ceil( targetUnit:getTraits().cpus ), bonus
+	onTooltip = function( self, hud, sim, abilityOwner, abilityUser, targetUnitID )
+		local tooltip = util.tooltip( hud._screen )
+		local section = tooltip:addSection()
+		local canUse, reason = abilityUser:canUseAbility( sim, self, abilityOwner, targetUnitID )
+		section:addLine( sim:getUnit( targetUnitID ):getName() )
+		section:addAbility( self:getName( sim, abilityOwner, abilityUser, targetUnitID ), STRINGS.SCMODS_ITEMS.ABILITIES.VELOCITY_DESC, "gui/items/icon-action_hack-console.png" )
+		if reason then
+			section:addRequirement( reason )
+		end
+		return tooltip
 	end,
 
 	isTarget = function( self, abilityOwner, unit, targetUnit )
@@ -46,7 +43,7 @@ local SC_jackin_velocity =
 		if targetUnit:getTraits().mainframe_status ~= "active" then
 			return false
 		end
-		if ( targetUnit:getTraits().cpus or 0 ) == 0 then
+		if not targetUnit:getTraits().cpus or targetUnit:getTraits().cpus == 0 then -- Nub: CPUs is never nil, check kept for compatibility.
 			return false
 		end
 		return true
@@ -58,8 +55,7 @@ local SC_jackin_velocity =
 		for _, targetUnit in pairs( sim:getAllUnits() ) do
 			local x1, y1 = targetUnit:getLocation()
 			if x1 and self:isTarget( abilityOwner, unit, targetUnit ) then
-				local range = mathutil.dist2d( x0, y0, x1, y1 )
-				if range <= 1 and simquery.isConnected( sim, sim:getCell( x0, y0 ), sim:getCell( x1, y1 )) then
+				if mathutil.dist2d( x0, y0, x1, y1 ) <= 1 and simquery.isConnected( sim, sim:getCell( x0, y0 ), sim:getCell( x1, y1 )) then
 					table.insert( units, targetUnit )
 				end
 			end
@@ -79,7 +75,7 @@ local SC_jackin_velocity =
 			end
 		end
 		if abilityOwner:getTraits().cooldown and abilityOwner:getTraits().cooldown > 0 then
-			return false, util.sformat( STRINGS.UI.REASON.COOLDOWN,abilityOwner:getTraits().cooldown )
+			return false, util.sformat( STRINGS.UI.REASON.COOLDOWN, abilityOwner:getTraits().cooldown )
 		end
 		return abilityutil.checkRequirements( abilityOwner, unit )
 	end,
@@ -88,17 +84,16 @@ local SC_jackin_velocity =
 		sim:emitSpeech( unit, speechdefs.EVENT_HIJACK ) -- Nub: Unutilized, retained for future.
 		sim._resultTable.consoles_hacked = sim._resultTable.consoles_hacked and sim._resultTable.consoles_hacked + 1 or 1
 		local targetUnit = sim:getUnit( targetUnitID )
-		local x1, y1 = targetUnit:getLocation()
 		local x0, y0 = unit:getLocation()
-		local facing = simquery.getDirectionFromDelta( x1 - x0, y1 - y0 )
-		sim:dispatchEvent( simdefs.EV_UNIT_USECOMP, { unitID = unit:getID(), targetID = targetUnit:getID(), facing = facing, sound = simdefs.SOUNDPATH_USE_CONSOLE, soundFrame = 10 })
+		local x1, y1 = targetUnit:getLocation()
+		sim:dispatchEvent( simdefs.EV_UNIT_USECOMP, { unitID = unit:getID(), targetID = targetUnit:getID(), facing = simquery.getDirectionFromDelta( x1 - x0, y1 - y0 ), sound = simdefs.SOUNDPATH_USE_CONSOLE, soundFrame = 10 })
 		local triggerData = sim:triggerEvent( simdefs.TRG_UNIT_HIJACKED, { unit = targetUnit, sourceUnit = unit }) -- Unutilized, retained for future.
 		if not triggerData.abort then
 			local cpus, bonus = self:calculateCPUs( abilityOwner, unit, targetUnit )
-			local jackinAPbonus = ( cpus + bonus ) * 2
+			local APbonus = ( cpus + bonus ) * 2
 			sim:dispatchEvent( simdefs.EV_GAIN_AP, { unit = unit })
-			sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { unit = unit, txt = util.sformat( STRINGS.SCMODS_ITEMS.FLY_TXT.VELOCITY, jackinAPbonus )})
-			unit:addMP( jackinAPbonus )
+			sim:dispatchEvent( simdefs.EV_UNIT_FLOAT_TXT, { txt = util.sformat( STRINGS.SCMODS_ITEMS.FLY_TXT.VELOCITY, APbonus ), x = x0, y = y0 })
+			unit:addMP( APbonus )
 			unit:getPlayerOwner():addCPUs( cpus + bonus, sim, x1, y1 )
 			inventory.useItem( sim, unit, abilityOwner )
 			targetUnit:getTraits().hijacked = true -- Nub: Unutilized, retained for future.
